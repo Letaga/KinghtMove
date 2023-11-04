@@ -1,8 +1,9 @@
-﻿#include <iostream>
+#include <iostream>
 
 using namespace std;
 
-int Steps[8][2] = {{-1, -2}, {-2, -1}, {-2, 1}, {1, -2},{-1, 2}, {2, -1}, {1, 2}, {2, 1}};
+int Steps[8][2] = { {-1, -2}, {-2, -1}, {-2, 1}, {1, -2},{-1, 2}, {2, -1}, {1, 2}, {2, 1} };
+time_t start, end;
 
 
 int Enter(int from, int to);
@@ -22,19 +23,17 @@ int main()
     cout << "y = ";
     y = Enter(0, size);
 
-    
     KnghtMove(size, x, y);
 }
 
 void KnghtMove(int size, int x, int y)
 {
-    time_t start, end;
-    int ** global;
+    int** global;
     start = time(NULL);
     int** board = new int* [size];
     for (int i = 0; i < size; i++)
         board[i] = new int[size];
- 
+
 
     global = board;
 
@@ -61,7 +60,7 @@ void KnghtMove(int size, int x, int y)
         delete[] global[i];
     delete[] global;
 }
-int Path(int x, int y, int numMove, int** global, int &back, int size)
+int Path(int x, int y, int numMove, int** global, int& back, int size)
 {
     int xNext = 0, yNext = 0, maxMove = size * size - 1;
 
@@ -74,19 +73,24 @@ int Path(int x, int y, int numMove, int** global, int &back, int size)
     {
         xNext = x + Steps[i][0];
         yNext = y + Steps[i][1];
-        if (CheckMove(xNext, yNext, global, size) && Path(xNext, yNext, numMove + 1, global, back, maxMove))
+        if (CheckMove(xNext, yNext, global, size) && Path(xNext, yNext, numMove + 1, global, back, size))
             return 1;
     }
 
     global[x][y] = 0;
     back++;
     numMove++;
-    return 0;
+    time_t newTime = time(NULL);
+
+    if (difftime(newTime, start) > 10800)
+        return 0;
+    cout << "Найденное решение не полное\n";
+    return 1;
 }
 
 int CheckMove(int x, int y, int** desk, int size)
 {
-    return x >= 0 && y >= 0 && x < size && y < size && desk[x][y] == 0;
+    return x >= 0 && y >= 0 && x < size&& y < size&& desk[x][y] == 0;
 }
 
 int Enter(int from, int to)
